@@ -1,0 +1,89 @@
+! This file defines the pointers to C++ structures
+! and explicit interfaces to the C++ routines
+
+#define SvmFortranAddr type(c_ptr)
+#define SvmParameter SvmFortranAddr
+#define SvmProblem SvmFortranAddr
+#define SvmModel SvmFortranAddr
+
+interface
+
+  function SvmPredict(model, xidx, xval, n) bind (c)
+    use iso_c_binding
+    real(c_double) :: SvmPredict
+    SvmModel, value :: model
+    integer(c_int) :: xidx(*)
+    real(c_double) :: xval(*)
+    integer(c_int), value :: n
+  end function SvmPredict
+
+  function SvmTrain(prob, param) bind (c)
+    use iso_c_binding
+    SvmModel :: SvmTrain
+    SvmProblem, value :: prob
+    SvmParameter, value :: param
+  end function SvmTrain
+
+  subroutine SvmModelDestroy(model) bind (c)
+    use iso_c_binding
+    SvmModel, value :: model
+  end subroutine SvmModelDestroy
+
+  subroutine SvmDataFinalize(prob, param) bind(c)
+    use iso_c_binding
+    SvmProblem, value :: prob
+    SvmParameter, value :: param
+  end subroutine SvmDataFinalize
+
+  function SvmProblemCreate(n) bind (c)
+    use iso_c_binding
+    SvmProblem :: SvmProblemCreate
+    integer(c_int), value :: n
+  end function SvmProblemCreate
+
+  subroutine SvmProblemDestroy(prob) bind (c)
+    use iso_c_binding
+    SvmProblem, value :: prob
+  end subroutine SvmProblemDestroy
+
+  function SvmProblemAddData(prob, y, yidx, xidx, xval, n) bind (c)
+    use iso_c_binding
+    SvmProblem :: SvmProblemAddData
+    SvmProblem, value :: prob
+    real(c_double), value :: y
+    integer(c_int),value :: yidx
+    integer(c_int) :: xidx(*)
+    real(c_double) :: xval(*)
+    integer(c_int), value :: n
+  end function SvmProblemAddData
+
+  subroutine SvmProblemPrintData(prob, i) bind(c)
+    use iso_c_binding
+    SvmProblem, value :: prob
+    integer(c_int), value     :: i
+  end subroutine SvmProblemPrintData
+
+  function SvmParameterCreate() bind(c)
+    use iso_c_binding
+    SvmParameter :: SvmParameterCreate
+  end function SvmParameterCreate
+
+  subroutine SvmParameterDestroy(param) bind(c)
+    use iso_c_binding
+    SvmParameter, value :: param
+  end subroutine SvmParameterDestroy
+
+  function SvmParameterSet(param, optstr, val) bind(c)
+    use iso_c_binding
+    SvmParameter :: SvmParameterSet
+    SvmParameter, value :: param
+    character(c_char) :: optstr(*)
+    type(c_ptr), value :: val
+  end function SvmParameterSet
+
+  subroutine SvmParameterPrint(param) bind(c)
+    use iso_c_binding
+    SvmParameter, value :: param
+  end subroutine SvmParameterPrint
+
+end interface
