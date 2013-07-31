@@ -132,7 +132,7 @@ svm_parameter *svmparametercreate()
     svm_parameter *param = new svm_parameter;
 
     // Setup default values
-    param -> svm_type = C_SVC;
+    param -> svm_type = EPSILON_SVR;
     param -> kernel_type = RBF;
     param -> degree = 3;
     param -> gamma = 0;    // 1/num_features
